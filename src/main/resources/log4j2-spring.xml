@@ -54,6 +54,7 @@
         <logger name="org.springframework.security" level="DEBUG"></logger>
         <logger name="org.springframework.jdbc" level="DEBUG"></logger>
         <logger name="org.mybatis" level="INFO"></logger>
+        <logger name="org.eclipse.jetty" level="INFO"></logger>
         <logger name="com.believe.sun.oauth" level="DEBUG"></logger>
         <root level="all">
             <appender-ref ref="Console"/>
