@@ -25,31 +25,30 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable() // oauth server 不需要 csrf 防护
-                //.addFilterBefore(oAuth2AuthenticationProcessingFilter, AbstractAuthenticationProcessingFilter.class)
-                .authorizeRequests()
-                .antMatchers("/v2/api-docs",
-                        "/configuration/ui",
-                        "/swagger-resources",
-                        "/swagger-resources/**",
-                        "/configuration/security",
-                        "/swagger-ui.html",
-                        "/webjars/**")
-                .permitAll()
-                .and()
+        http.csrf().disable() // oauth server 不需要 csrf 防护
+            //.addFilterBefore(oAuth2AuthenticationProcessingFilter, AbstractAuthenticationProcessingFilter.class)
+            .authorizeRequests()
+            .antMatchers("/v2/api-docs",
+                    "/configuration/ui",
+                    "/swagger-resources",
+                    "/swagger-resources/**",
+                    "/configuration/security",
+                    "/swagger-ui.html",
+                    "/webjars/**")
+            .permitAll()
+            .and()
 //                .antMatcher("/swagger-ui.html")
 //                .formLogin()
 //                .successForwardUrl("/swagger-ui.html")
 //                .and()
-                //其他页面都需要登录后访问
-                .authorizeRequests()
-                .antMatchers("/register/**")
-                .hasRole("ADMIN")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .httpBasic().disable(); // 禁止 basic 认证
+            //其他页面都需要登录后访问
+            .authorizeRequests()
+            .antMatchers("/clients/**")
+            .hasAnyRole("ADMIN","SERVICE")
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .httpBasic().disable(); // 禁止 basic 认证
     }
 }

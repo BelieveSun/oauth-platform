@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiModelProperty;
 public class ClientForm {
     @ApiModelProperty("client_id必须输入,且必须唯一,长度至少5位; 在实际应用中的另一个名称叫appKey,与client_id是同一个概念.")
     private String clientId;
+    @ApiModelProperty("client name")
+    private String clientName;
     @ApiModelProperty("resourceIds可选; 可选值必须来源于与security.xml中标签‹oauth2:resource-server的属性resource-id值")
     private String resourceIds;
     @ApiModelProperty("client_secret必须输入,且长度至少8位; 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.")
@@ -28,10 +30,10 @@ public class ClientForm {
     private Integer accessTokenValidity;
     @ApiModelProperty("设定客户端的refresh_token的有效时间值(单位:秒),可选, 若不设定值则使用默认的有效时间值(60 * 60 * 24 * 30, 30天); 若设定则必须是大于0的整数值")
     private Integer refreshTokenValidity;
-    @ApiModelProperty("这是一个预留的字段,在Oauth的流程中没有实际的使用,可选,但若设置值,必须是JSON格式的数据,如: {\"country\":\"CN\",\"country_code\":\"086\"}")
+    @ApiModelProperty("预留的字段,在Oauth的流程中没有实际作用,可以在这里配置令牌使用信息.必须是JSON格式的数据,如: {\"country\":\"CN\",\"country_code\":\"086\"}")
     private String additionalInformation;
     @ApiModelProperty("是否自动跳转，不经过用户审批")
-    private String autoapprove;
+    private boolean autoApprove;
 
     public String getClientId() {
         return clientId;
@@ -39,6 +41,14 @@ public class ClientForm {
 
     public void setClientId(String clientId) {
         this.clientId = clientId;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     public String getResourceIds() {
@@ -113,11 +123,11 @@ public class ClientForm {
         this.additionalInformation = additionalInformation;
     }
 
-    public String getAutoapprove() {
-        return autoapprove;
+    public boolean isAutoApprove() {
+        return autoApprove;
     }
 
-    public void setAutoapprove(String autoapprove) {
-        this.autoapprove = autoapprove;
+    public void setAutoApprove(boolean autoApprove) {
+        this.autoApprove = autoApprove;
     }
 }
