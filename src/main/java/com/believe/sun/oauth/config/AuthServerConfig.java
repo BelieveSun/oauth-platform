@@ -40,7 +40,7 @@ import javax.sql.DataSource;
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
-    private  UserDetailsService userDetailsService; // 引入security中提供的 UserDetailsService
+    private UserDetailsService userDetailsService; // 引入security中提供的 UserDetailsService
     @Autowired
     @Qualifier("authenticationManager")
     private AuthenticationManager authenticationManager; // 引入security中提供的 AuthenticationManager
@@ -50,22 +50,20 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private DataSource dataSource;
 
     @Autowired
-    private  TokenStore tokenStore;
+    private TokenStore tokenStore;
     @Autowired
     @Qualifier("passwordAuthenticationManager")
     private AuthenticationManager passwordAuthenticationManager;
 
     @Autowired
-    private  UserApprovalHandler userApprovalHandler;
+    private UserApprovalHandler userApprovalHandler;
     @Autowired
-    private  AccessDeniedHandler accessDeniedHandler;
-
+    private AccessDeniedHandler accessDeniedHandler;
 
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.addTokenEndpointAuthenticationFilter(clientCredentialsTokenEndpointFilter());
-//        security.addTokenEndpointAuthenticationFilter(checkTokenEndpointFilter());
         security.accessDeniedHandler(accessDeniedHandler);
         security.tokenKeyAccess("permitAll()")
                 .checkTokenAccess("permitAll()");
@@ -88,22 +86,14 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     }
 
 
-
     @Bean
     public AuthorizationCodeServices authorizationCodeServices() {
         return new JdbcAuthorizationCodeServices(dataSource);
     }
 
     @Bean
-    public ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter(){
+    public ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter() {
         ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter = new ClientCredentialsTokenEndpointFilter();
-        clientCredentialsTokenEndpointFilter.setAuthenticationManager(authenticationManager);
-        return clientCredentialsTokenEndpointFilter;
-    }
-
-
-    private ClientCredentialsTokenEndpointFilter checkTokenEndpointFilter(){
-        ClientCredentialsTokenEndpointFilter clientCredentialsTokenEndpointFilter = new ClientCredentialsTokenEndpointFilter("/oauth/check_token");
         clientCredentialsTokenEndpointFilter.setAuthenticationManager(authenticationManager);
         return clientCredentialsTokenEndpointFilter;
     }

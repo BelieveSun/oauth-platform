@@ -19,26 +19,27 @@ import java.util.List;
  * Created by sungj on 17-6-16.
  */
 @Repository
-public class UserMapperImpl implements UserMapper{
+public class UserMapperImpl implements UserMapper {
 
 
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public UserMapperImpl(@Qualifier(value = "userDataSource") DataSource dataSource){
+    public UserMapperImpl(@Qualifier(value = "userDataSource") DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    public User findUserByName(String username){
-        final String sql = "select * from user where account = ? and status >= 0";
-        final List<User> users = jdbcTemplate.query(sql, new String[]{username},new UserRowMapper());
-        if(users != null && users.size() > 0){
+
+    public User findUserByName(String username) {
+        final String sql = "SELECT * FROM user WHERE account = ? AND status = 1";
+        final List<User> users = jdbcTemplate.query(sql, new String[]{username}, new UserRowMapper());
+        if (users != null && users.size() > 0) {
             User user = users.get(0);
             String roleIds = user.getRoleIds();
             List<Role> roleNames = new ArrayList<>();
-            for(String roleId : roleIds.split(",")){
+            for (String roleId : roleIds.split(",")) {
                 Role role = findRoleById(Integer.valueOf(roleId));
-                if(role == null){
-                    throw new RuntimeException("can't find roleId:"+roleId);
+                if (role == null) {
+                    throw new RuntimeException("can't find roleId:" + roleId);
                 }
                 roleNames.add(role);
             }
@@ -49,12 +50,12 @@ public class UserMapperImpl implements UserMapper{
     }
 
 
-    public Role findRoleById(Integer id){
-        final String sql = "select * from role where id = ?";
+    public Role findRoleById(Integer id) {
+        final String sql = "SELECT * FROM role WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, new Integer[]{id}, new RolesRowMapper());
     }
 
-    private class UserRowMapper implements RowMapper<User>{
+    private class UserRowMapper implements RowMapper<User> {
 
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -77,7 +78,7 @@ public class UserMapperImpl implements UserMapper{
         }
     }
 
-    private class RolesRowMapper implements RowMapper<Role>{
+    private class RolesRowMapper implements RowMapper<Role> {
         @Override
         public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
             Role role = new Role();

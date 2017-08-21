@@ -35,19 +35,20 @@ public class OauthClientServiceImpl implements OauthClientService {
     @Override
     public void registerClient(ClientForm form) {
         String clientName = form.getClientName();
-        String clientNameJson = "{\"client_name\":"+clientName+"}";
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("client_name", clientName);
         ClientDetails clientDetails = new ClientDetailsBuilder(form.getClientId())
                 .additionalInformation(form.getAdditionalInformation())
-                .accessTokenValiditySeconds(form.getAccessTokenValidity())
+                .accessTokenValiditySeconds(form.getAccessTokenValidity() == null ? 0 : form.getAccessTokenValidity())
                 .authorities(form.getAuthorities())
                 .authorizedGrantTypes(form.getAuthorizedGrantTypes())
                 .autoApprove(form.isAutoApprove())
                 .redirectUris(form.getWebServerRedirectUri())
-                .refreshTokenValiditySeconds(form.getRefreshTokenValidity())
+                .refreshTokenValiditySeconds(form.getRefreshTokenValidity() == null ? 0 : form.getRefreshTokenValidity())
                 .resourceIds(form.getResourceIds())
                 .secret(form.getClientSecret())
                 .scopes(form.getScope())
-                .additionalInformation(clientNameJson).build();
+                .additionalInformation(map).build();
         clientRegistrationService.addClientDetails(clientDetails);
     }
 
@@ -56,15 +57,18 @@ public class OauthClientServiceImpl implements OauthClientService {
 
         ClientDetails clientDetails = clientDetailsService.loadClientByClientId(clientId);
         ClientInfo info = new ClientInfo();
-        if(clientDetails != null) {
+        if (clientDetails != null) {
             info.setClientId(clientDetails.getClientId());
+            info.setClientSecret(clientDetails.getClientSecret());
             Map<String, Object> additionalInformation = clientDetails.getAdditionalInformation();
             List<String> roles = new ArrayList<>();
-            for(GrantedAuthority g :clientDetails.getAuthorities()){
+            for (GrantedAuthority g : clientDetails.getAuthorities()) {
                 roles.add(g.getAuthority());
             }
             info.setRoles(StringUtils.collectionToDelimitedString(roles, ","));
             info.setClientName((String) additionalInformation.get("client_name"));
+            info.setAuthorizedGrantTypes(clientDetails.getAuthorizedGrantTypes());
+            info.setResourceIds(clientDetails.getResourceIds());
         }
         return info;
     }
@@ -121,19 +125,20 @@ public class OauthClientServiceImpl implements OauthClientService {
             result.setAdditionalInformation(additionalInformation);
             if (autoApprove) {
                 result.setAutoApproveScopes(scopes);
-            }
-            else {
+            } else {
                 result.setAutoApproveScopes(autoApproveScopes);
             }
             return result;
         }
 
         ClientDetailsBuilder resourceIds(String... resourceIds) {
+            if (resourceIds.length == 0) return this;
             Collections.addAll(this.resourceIds, resourceIds);
             return this;
         }
 
         ClientDetailsBuilder redirectUris(String... registeredRedirectUris) {
+            if (registeredRedirectUris.length == 0) return this;
             Collections.addAll(this.registeredRedirectUris, registeredRedirectUris);
             return this;
         }
@@ -144,11 +149,13 @@ public class OauthClientServiceImpl implements OauthClientService {
         }
 
         ClientDetailsBuilder accessTokenValiditySeconds(int accessTokenValiditySeconds) {
+            if (accessTokenValiditySeconds == 0) return this;
             this.accessTokenValiditySeconds = accessTokenValiditySeconds;
             return this;
         }
 
         ClientDetailsBuilder refreshTokenValiditySeconds(int refreshTokenValiditySeconds) {
+            if (refreshTokenValiditySeconds == 0) return this;
             this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
             return this;
         }
@@ -185,13 +192,16 @@ public class OauthClientServiceImpl implements OauthClientService {
 
         ClientDetailsBuilder additionalInformation(String... pairs) {
             for (String pair : pairs) {
+                if (pair == null) {
+                    break;
+                }
                 String separator = ":";
                 if (!pair.contains(separator) && pair.contains("=")) {
                     separator = "=";
                 }
                 int index = pair.indexOf(separator);
                 String key = pair.substring(0, index > 0 ? index : pair.length());
-                String value = index > 0 ? pair.substring(index+1) : null;
+                String value = index > 0 ? pair.substring(index + 1) : null;
                 this.additionalInformation.put(key, value);
             }
             return this;

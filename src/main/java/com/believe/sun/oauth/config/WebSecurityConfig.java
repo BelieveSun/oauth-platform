@@ -65,7 +65,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+        http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "clients/random")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic().disable();
     }
 
 
@@ -87,7 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Primary
-    public ClientDetailsService clientDetailsService(){
+    public ClientDetailsService clientDetailsService() {
         return new JdbcClientDetailsService(dataSource);
     }
 
@@ -96,17 +110,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public DefaultTokenServices tokenService() throws Exception {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore());
-        //Expire 30 minute
-//        defaultTokenServices.setRefreshTokenValiditySeconds();
-        defaultTokenServices.setAccessTokenValiditySeconds(60*30);
         defaultTokenServices.setClientDetailsService(clientDetailsService());
-//        defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }
 
 
     @Bean("passwordAuthenticationManager")
-    public AuthenticationManager passwordAuthenticationManager(){
+    public AuthenticationManager passwordAuthenticationManager() {
         List<AuthenticationProvider> providers = new ArrayList<>();
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService);
@@ -130,14 +140,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public TokenStore tokenStore(){
+    public TokenStore tokenStore() {
         JdbcTokenStore jdbcTokenStore = new JdbcTokenStore(dataSource);
         jdbcTokenStore.setAuthenticationKeyGenerator(authenticationKeyGenerator);
         return jdbcTokenStore;
     }
 
     @Bean
-    public UserApprovalHandler userApprovalHandler(){
+    public UserApprovalHandler userApprovalHandler() {
         LocalUserApprovalHandle localUserApprovalHandle = new LocalUserApprovalHandle();
         localUserApprovalHandle.setClientDetailsService(clientDetailsService());
         localUserApprovalHandle.setTokenStore(tokenStore());
@@ -146,17 +156,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public OAuth2RequestFactory oAuth2RequestFactory(){
+    public OAuth2RequestFactory oAuth2RequestFactory() {
         return new DefaultOAuth2RequestFactory(clientDetailsService());
     }
 
     public class LocalUserApprovalHandle extends TokenStoreUserApprovalHandler {
         @Override
         public boolean isApproved(AuthorizationRequest authorizationRequest, Authentication userAuthentication) {
-            if(super.isApproved(authorizationRequest,userAuthentication)){
+            if (super.isApproved(authorizationRequest, userAuthentication)) {
                 return true;
             }
-            if(!userAuthentication.isAuthenticated()){
+            if (!userAuthentication.isAuthenticated()) {
                 return false;
             }
             //TODO:-----------

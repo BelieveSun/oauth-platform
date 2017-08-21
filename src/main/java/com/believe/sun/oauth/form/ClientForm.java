@@ -12,19 +12,19 @@ public class ClientForm {
     private String clientId;
     @ApiModelProperty("client name")
     private String clientName;
-    @ApiModelProperty("resourceIds可选; 可选值必须来源于与security.xml中标签‹oauth2:resource-server的属性resource-id值")
+    @ApiModelProperty("resourceIds可选; 可选值必须来源于与resource-server中的定义")
     private String resourceIds;
     @ApiModelProperty("client_secret必须输入,且长度至少8位; 在实际应用中的另一个名称叫appSecret,与client_secret是同一个概念.")
     private String clientSecret;
-    @ApiModelProperty(value = "scope必须选择",required = true,allowableValues = "read,write,read write")
+    @ApiModelProperty(value = "scope必须选择", required = true, allowableValues = "read,write,read write")
     private String scope;
-    @ApiModelProperty(value = "至少勾选一项grant_type(s), 且不能只单独勾选refresh_token",required = true,
-            allowableValues ="authorization_code,password,implicit,client_credentials,refresh_token" )
+    @ApiModelProperty(value = "至少勾选一项grant_type(s), 且不能只单独勾选refresh_token", required = true,
+            allowableValues = "authorization_code,password,implicit,client_credentials,refresh_token")
     private String authorizedGrantTypes;
     @ApiModelProperty("若grant_type包括authorization_code或implicit, 则必须输入redirect_uri")
     private String webServerRedirectUri;
     @ApiModelProperty(value = "指定客户端所拥有的Spring Security的权限值,可选; 若grant_type为implicit或client_credentials则必须选择authorities, " +
-            "因为服务端将根据该字段值的权限来判断是否有权限访问对应的API",allowableValues = " ,ROLE_SERVICE")
+            "因为服务端将根据该字段值的权限来判断是否有权限访问对应的API", allowableValues = " ,ROLE_SERVICE")
     private String authorities;
     @ApiModelProperty("设定客户端的access_token的有效时间值(单位:秒),可选, 若不设定值则使用默认的有效时间值(60 * 60 * 12, 12小时); 若设定则必须是大于0的整数值")
     private Integer accessTokenValidity;

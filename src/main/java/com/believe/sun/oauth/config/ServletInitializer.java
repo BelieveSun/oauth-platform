@@ -30,26 +30,27 @@ import javax.sql.DataSource;
 public class ServletInitializer extends SpringBootServletInitializer {
 
     private static Class<ServletInitializer> applicationClass = ServletInitializer.class;
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 
         return builder.sources(applicationClass);
     }
 
-    public static void main(String [] args){
-        SpringApplication.run(ServletInitializer.class,args);
+    public static void main(String[] args) {
+        SpringApplication.run(ServletInitializer.class, args);
     }
 
     @Bean("userDataSource")
-    @ConfigurationProperties(prefix ="app.datasource")
-    public DataSource userDataSource(){
+    @ConfigurationProperties(prefix = "app.datasource")
+    public DataSource userDataSource() {
         return new org.apache.tomcat.jdbc.pool.DataSource();
     }
 
     @Bean("dataSource")
     @Primary
-    @ConfigurationProperties(prefix ="spring.datasource")
-    public DataSource dataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DataSource dataSource() {
         return new org.apache.tomcat.jdbc.pool.DataSource();
     }
 

@@ -45,7 +45,7 @@ public class SwaggerConfig {
 
 
     private ApiInfo apiInfo() {
-        Contact contact = new Contact("sungj","","15680028136@163.com");
+        Contact contact = new Contact("sungj", "", "15680028136@163.com");
         return new ApiInfoBuilder()
                 .title("OAuth2 管理")
                 .description("OAuth2 API")

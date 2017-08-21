@@ -20,6 +20,10 @@ public class DataResult<T> extends BaseResult {
         this.data = data;
     }
 
+    public DataResult(Integer error, String message, String comment) {
+        super(error,message,comment);
+    }
+
     public T getData() {
         return data;
     }

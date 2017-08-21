@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
  */
 public class ResultUtil {
 
-    public static ResponseEntity<Result> build(Error error){
-        return new ResponseEntity<>(new BaseResult(error.getError(),error.getMessage(),error.getComment()),
+    public static <T> ResponseEntity<DataResult<T>> build(Error error){
+        return new ResponseEntity<>(new DataResult<T>(error.getError(),error.getMessage(),error.getComment()),
                 HttpStatus.OK);
     }
 
