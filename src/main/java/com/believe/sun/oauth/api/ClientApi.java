@@ -4,7 +4,8 @@ import com.believe.sun.oauth.util.*;
 import com.believe.sun.oauth.form.ClientForm;
 import com.believe.sun.oauth.pojo.ClientInfo;
 import com.believe.sun.oauth.service.OauthClientService;
-import com.believe.sun.oauth.util.Error;
+import com.believe.sun.tool.DataResult;
+import com.believe.sun.tool.ResultUtil;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.ClientAlreadyExistsException;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +58,6 @@ public class ClientApi {
     @JsonView(ClientJsonView.Base.class)
     public ResponseEntity<DataResult<ClientInfo>> getClientInfo(@PathVariable String clientId) {
         ClientInfo clientInfo = oauthClientService.getClientInfo(clientId);
-        return ResultUtil.build(Error.SUCCESS, clientInfo);
+        return ResultUtil.build(ErrorCode.SUCCESS, clientInfo);
     }
 }

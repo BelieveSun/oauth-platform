@@ -1,5 +1,6 @@
 package com.believe.sun.oauth.util;
 
+import com.believe.sun.tool.Error;
 /**
  * Created by sungj on 17-7-26.
  */

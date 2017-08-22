@@ -1,7 +1,7 @@
 package com.believe.sun.oauth.api;
 
 import com.believe.sun.oauth.util.ErrorCode;
-import com.believe.sun.oauth.util.ResultUtil;
+import com.believe.sun.tool.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
